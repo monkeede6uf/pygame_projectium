@@ -5,10 +5,11 @@ from map import mini_map
 
 
 class Drawing:
-    def __init__(self, sc, sc_map, sc_stm):
+    def __init__(self, sc, sc_map, sc_stm, sc_gun):
         self.sc = sc
         self.sc_map = sc_map
         self.sc_stm = sc_stm
+        self.sc_gun = sc_gun
         self.font = pygame.font.SysFont('Arial', 36, bold=True)
         self.textures = {1: pygame.image.load('data/1.png').convert(),
                          2: pygame.image.load('data/2.png').convert(),
@@ -44,3 +45,8 @@ class Drawing:
         pygame.draw.rect(self.sc_stm, WHITE, (0, 0, 200, 20))
         pygame.draw.rect(self.sc_stm, VYRVI_GLAZ, (0, 0, 200 - player.stamina, 20))
         self.sc.blit(self.sc_stm, STAMINA_POS)
+
+    def gun(self, player):
+        img = pygame.image.load('data/gun.png').convert_alpha()
+        self.sc_gun.blit(img, (0, 0))
+        self.sc.blit(img, PUSHKA_POS)

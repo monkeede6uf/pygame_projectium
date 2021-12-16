@@ -9,9 +9,10 @@ pygame.init()
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
 sc_map = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
 sc_stm = pygame.Surface((200, 20))
+sc_gun = pygame.Surface((500, 300))
 clock = pygame.time.Clock()
 player = Player()
-drawing = Drawing(sc, sc_map, sc_stm)
+drawing = Drawing(sc, sc_map, sc_stm, sc_gun)
 
 
 while True:
@@ -26,6 +27,7 @@ while True:
     drawing.fps(clock)
     drawing.mini_map(player)
     drawing.stamina(player)
+    drawing.gun(player)
 
     pygame.display.flip()
     clock.tick(80)

@@ -19,6 +19,7 @@ MAP_POS = (0, HEIGHT - HEIGHT // MINIMAP_SCALE)
 
 STAMINA_POS = (5, 20)
 
+PUSHKA_POS = (WIDTH - 500, HEIGHT - 300)
 # ray casting settings
 FOV = math.pi / 3
 HALF_FOV = FOV / 2
