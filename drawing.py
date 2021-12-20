@@ -13,8 +13,17 @@ class Drawing:
         self.font = pygame.font.SysFont('Arial', 36, bold=True)
         self.textures = {1: pygame.image.load('data/1.png').convert(),
                          2: pygame.image.load('data/2.png').convert(),
-                         'S': pygame.image.load('data/sky.png').convert()
+                         'S': pygame.image.load('data/sky.png').convert(),
+                         'logo': pygame.image.load('data/logo.png').convert_alpha(),
+                         'gun': pygame.image.load('data/gun.png').convert_alpha()
                          }
+
+    def start(self):
+        self.sc.fill((106, 197, 244))
+        self.sc.blit(self.textures['logo'], (250, 50))
+        pygame.draw.rect(self.sc, (255, 255, 255), (230, 590, 720, 70), 0)
+        tx = self.font.render('Нажмите на любую кнопку, чтобы продолжить', 1, (255, 92, 0))
+        self.sc.blit(tx, (250, 600))
 
     def background(self, angle):
         sky_offset = -5 * math.degrees(angle) % WIDTH
@@ -35,7 +44,7 @@ class Drawing:
         self.sc_map.fill(BLACK)
         map_x, map_y = player.x // MAP_SCALE, player.y // MAP_SCALE
         pygame.draw.line(self.sc_map, YELLOW, (map_x, map_y), (map_x + 12 * math.cos(player.angle),
-                                                 map_y + 12 * math.sin(player.angle)), 2)
+                                                               map_y + 12 * math.sin(player.angle)), 2)
         pygame.draw.circle(self.sc_map, RED, (int(map_x), int(map_y)), 5)
         for x, y in mini_map:
             pygame.draw.rect(self.sc_map, (117, 246, 255), (x, y, MAP_TILE, MAP_TILE))
@@ -47,6 +56,4 @@ class Drawing:
         self.sc.blit(self.sc_stm, STAMINA_POS)
 
     def gun(self, player):
-        img = pygame.image.load('data/gun.png').convert_alpha()
-        self.sc_gun.blit(img, (0, 0))
-        self.sc.blit(img, PUSHKA_POS)
+        self.sc.blit(self.textures['gun'], PUSHKA_POS)
