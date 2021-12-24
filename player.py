@@ -74,8 +74,9 @@ class Player:
         if keys[pygame.K_LSHIFT]:
             if self.stamina <= 190:
                 self.stamina += 3
-                self.x += player_speed * 2 * cos_a
-                self.y += player_speed * 2 * sin_a
+                dx = player_speed * cos_a * 2
+                dy = player_speed * sin_a * 2
+                self.detect_collision(dx, dy)
             else:
                 self.x += player_speed * cos_a
                 self.y += player_speed * sin_a
