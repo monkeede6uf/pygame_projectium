@@ -30,8 +30,6 @@ while True:
 
         drawing.background(player.angle)
         drawing.world(player.pos, player.angle)
-        drawing.fps(clock)
-        drawing.mini_map(player)
         drawing.stamina(player)
         drawing.gun(player)
     else:
