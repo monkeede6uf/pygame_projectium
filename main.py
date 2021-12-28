@@ -2,7 +2,6 @@ import pygame
 from settings import *
 from player import Player
 import math
-from map import world_map
 from drawing import Drawing
 
 pygame.init()
@@ -23,13 +22,13 @@ while True:
         if not game_started and any(pygame.key.get_pressed()):
             game_started = True
             pygame.mixer.music.play(-1)
-            pygame.mixer.music.set_volume(0.3)
+            pygame.mixer.music.set_volume(0.1)
     if game_started:
         player.movement()
         sc.fill(BLACK)
 
-        drawing.background(player.angle)
-        drawing.world(player.pos, player.angle)
+        drawing.background(player.angle, player.level)
+        drawing.world(player.pos, player.angle, player.level)
         drawing.stamina(player)
         drawing.gun(player)
     else:

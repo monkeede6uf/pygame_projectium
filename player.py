@@ -1,7 +1,7 @@
 from settings import *
 import pygame
 import math
-from map import collision_walls
+from map import all_collision_walls
 
 class Player:
     def __init__(self):
@@ -9,7 +9,7 @@ class Player:
         self.angle = player_angle
         self.stamina = 0
         self.regen = False
-
+        self.level = 'paradise'
         self.side = 50
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
 
@@ -20,12 +20,12 @@ class Player:
     def detect_collision(self, dx, dy):
         next_rect = self.rect.copy()
         next_rect.move_ip(dx, dy)
-        hit_indexes = next_rect.collidelistall(collision_walls)
+        hit_indexes = next_rect.collidelistall(all_collision_walls[self.level])
 
         if len(hit_indexes):
             delta_x, delta_y = 0, 0
             for hit_index in hit_indexes:
-                hit_rect = collision_walls[hit_index]
+                hit_rect = all_collision_walls[self.level][hit_index]
                 if dx > 0:
                     delta_x += next_rect.right - hit_rect.left
                 else:
@@ -82,4 +82,6 @@ class Player:
                 self.y += player_speed * sin_a
         if not keys[pygame.K_LSHIFT]:
             self.stamina -= 1 if self.stamina > 0 else 0
+        if keys[pygame.K_ESCAPE]:
+            self.level = 'space_ship'
 

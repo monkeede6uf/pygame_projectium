@@ -11,11 +11,14 @@ class Drawing:
         self.sc_stm = sc_stm
         self.sc_gun = sc_gun
         self.font = pygame.font.SysFont('Arial', 36, bold=True)
-        self.textures = {1: pygame.image.load('data/1.png').convert(),
-                         2: pygame.image.load('data/2.png').convert(),
-                         'S': pygame.image.load('data/sky.png').convert(),
+        self.textures = {1: pygame.image.load('data/11.png').convert(),
+                         2: pygame.image.load('data/12.png').convert(),
+                         21: pygame.image.load('data/21.png').convert(),
+                         22: pygame.image.load('data/22.png').convert(),
+                         'sky': pygame.image.load('data/sky.png').convert(),
+                         'ship': pygame.image.load('data/ship.png').convert(),
                          'logo': pygame.image.load('data/logo.png').convert_alpha(),
-                         'gun': pygame.image.load('data/gun.png').convert_alpha()
+                         'gun': pygame.image.load('data/nigga.png').convert_alpha()
                          }
 
     def start(self):
@@ -25,15 +28,16 @@ class Drawing:
         tx = self.font.render('Нажмите на любую кнопку, чтобы продолжить', 1, (255, 92, 0))
         self.sc.blit(tx, (250, 600))
 
-    def background(self, angle):
-        sky_offset = -5 * math.degrees(angle) % WIDTH
-        self.sc.blit(self.textures['S'], (sky_offset, 0))
-        self.sc.blit(self.textures['S'], (sky_offset - WIDTH, 0))
-        self.sc.blit(self.textures['S'], (sky_offset + WIDTH, 0))
+    def background(self, angle, player_level):
+        key = 'sky' if player_level == 'paradise' else 'ship'
+        sky_offset = -7 * math.degrees(angle) % WIDTH
+        self.sc.blit(self.textures[key], (sky_offset, 0))
+        self.sc.blit(self.textures[key], (sky_offset - WIDTH, 0))
+        self.sc.blit(self.textures[key], (sky_offset + WIDTH, 0))
         pygame.draw.rect(self.sc, DARKGRAY, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
-    def world(self, player_pos, player_angle):
-        ray_casting(self.sc, player_pos, player_angle, self.textures)
+    def world(self, player_pos, player_angle, player_level):
+        ray_casting(self.sc, player_pos, player_angle, self.textures, player_level)
 
     def fps(self, clock):
         display_fps = str(int(clock.get_fps()))

@@ -1,13 +1,13 @@
 import pygame
 from settings import *
-from map import world_map, WORLD_WIDTH, WORLD_HEIGHT
+from map import all_levels, WORLD_WIDTH, WORLD_HEIGHT
 
 
 def mapping(a, b):
     return (a // TILE) * TILE, (b // TILE) * TILE
 
 
-def ray_casting(sc, player_pos, player_angle, textures):
+def ray_casting(sc, player_pos, player_angle, textures, player_level):
     ox, oy = player_pos
     xm, ym = mapping(ox, oy)
     cur_angle = player_angle - HALF_FOV
@@ -23,8 +23,8 @@ def ray_casting(sc, player_pos, player_angle, textures):
             depth_v = (x - ox) / cos_a
             yv = oy + depth_v * sin_a
             tile_v = mapping(x + dx, yv)
-            if tile_v in world_map:
-                texture_v = world_map[tile_v]
+            if tile_v in all_levels[player_level]:
+                texture_v = all_levels[player_level][tile_v]
                 break
             x += dx * TILE
 
@@ -34,8 +34,8 @@ def ray_casting(sc, player_pos, player_angle, textures):
             depth_h = (y - oy) / sin_a
             xh = ox + depth_h * cos_a
             tile_h = mapping(xh, y + dy)
-            if tile_h in world_map:
-                texture_h = world_map[tile_h]
+            if tile_h in all_levels[player_level]:
+                texture_h = all_levels[player_level][tile_h]
                 break
             y += dy * TILE
 
