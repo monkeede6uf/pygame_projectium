@@ -6,7 +6,7 @@ from drawing import Drawing
 
 pygame.init()
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
-sc_map = pygame.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
+sc_map = pygame.Surface((WIDTH // MAP_SCALE + 100, HEIGHT // MAP_SCALE))
 sc_stm = pygame.Surface((200, 20))
 sc_gun = pygame.Surface((500, 300))
 clock = pygame.time.Clock()
@@ -26,11 +26,12 @@ while True:
     if game_started:
         player.movement()
         sc.fill(BLACK)
-
         drawing.background(player.angle, player.level)
         drawing.world(player.pos, player.angle, player.level)
         drawing.stamina(player)
         drawing.gun(player)
+        if player.map:
+            drawing.mini_map(player)
     else:
         drawing.start()
 
