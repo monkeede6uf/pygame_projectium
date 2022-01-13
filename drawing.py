@@ -18,15 +18,16 @@ class Drawing:
                          'sky': pygame.image.load('data/sky.png').convert(),
                          'ship': pygame.image.load('data/ship.png').convert(),
                          'logo': pygame.image.load('data/logo.png').convert_alpha(),
-                         'gun': pygame.image.load('data/nigga.png').convert_alpha()
+                         'book': pygame.image.load('data/nigga.png').convert_alpha(),
+                         'pushka': pygame.image.load('data/gun.png').convert_alpha()
                          }
 
     def start(self):
         self.sc.fill((106, 197, 244))
-        self.sc.blit(self.textures['logo'], (250, 50))
-        pygame.draw.rect(self.sc, (255, 255, 255), (230, 590, 720, 70), 0)
-        tx = self.font.render('Нажмите на любую кнопку, чтобы продолжить', 1, (255, 92, 0))
-        self.sc.blit(tx, (250, 600))
+        self.sc.blit(self.textures['logo'], (300, 50))
+        pygame.draw.rect(self.sc, (255, 255, 255), (230, 590, 735, 65), 0)
+        tx = self.font.render('Нажмите на любую клавишу, чтобы продолжить', 1, (255, 92, 0))
+        self.sc.blit(tx, (245, 600))
 
     def background(self, angle, player_level):
         key = 'sky' if player_level == 'paradise' else 'ship'
@@ -60,4 +61,15 @@ class Drawing:
         self.sc.blit(self.sc_stm, STAMINA_POS)
 
     def gun(self, player):
-        self.sc.blit(self.textures['gun'], PUSHKA_POS)
+        self.sc.blit(self.textures['book' if player.level == 'paradise' else 'pushka'], PUSHKA_POS)
+
+
+class Gif:
+    def __init__(self, sc):
+        self.counter = 0
+        self.sc = sc
+        self.gif = [pygame.image.load(f'data/gif/{i}.png').convert_alpha() for i in range(1, 18)]
+
+    def change_gif(self):
+        self.sc.blit(self.gif[self.counter], (0, 0))
+        self.counter += 1 if self.counter < len(self.gif) else 0

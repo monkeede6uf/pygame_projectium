@@ -12,6 +12,7 @@ class Player:
         self.level = 'paradise'
         self.side = 50
         self.map = False
+        self.level_changed = False
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
 
     @property
@@ -84,9 +85,16 @@ class Player:
         if not keys[pygame.K_LSHIFT]:
             self.stamina -= 1 if self.stamina > 0 else 0
         if keys[pygame.K_ESCAPE]:
-            print(self.x, self.y)
+            print(self.x, self.y, self.angle)
         if keys[pygame.K_m]:
             self.map = True if not self.map else False
         if int(self.x) in range(1324, 1404) and int(self.y) in range(425, 490):
             self.level = 'space_ship'
+            self.level_changed = True
+            self.x = 243
+            self.y = 148
+            self.angle = -3.14
+        if keys[pygame.K_j]:
+            self.level = 'space_ship'
+            self.level_changed = True
 
