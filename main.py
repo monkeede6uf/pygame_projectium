@@ -1,7 +1,7 @@
 import pygame
 from settings import *
 from player import Player
-import math
+import math, time, csv
 from drawing import Drawing, Gif
 
 pygame.init()
@@ -14,18 +14,22 @@ player = Player()
 drawing = Drawing(sc, sc_map, sc_stm, sc_gun)
 gif = Gif(sc)
 pygame.mixer.music.load('data/main_theme.mp3')
-game_started = False
-fps = 80
+fps, start_time, timer = 80, 0, 0
+with open('data/results.csv', encoding='utf-8') as f:
+    old_results = sorted([i[0] for i in list(csv.reader(f, delimiter=';'))], key=lambda x: float(x))
+    old_results = ['Your records:'] + old_results
+
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
-        if not game_started and any(pygame.key.get_pressed()):
-            game_started = True
+        if player.game_moment == 'start' and any(pygame.key.get_pressed()):
+            player.game_moment = 'paradise'
             pygame.mixer.music.play(-1)
-            pygame.mixer.music.set_volume(0.1)
-    if game_started:
+            pygame.mixer.music.set_volume(0)
+            start_time = time.time()
+    if player.game_moment in ['paradise', 'space_ship']:
         player.movement()
         sc.fill(BLACK)
         drawing.background(player.angle, player.level)
@@ -34,13 +38,19 @@ while True:
         drawing.gun(player)
         if player.map:
             drawing.mini_map(player)
-        if player.level_changed and gif.counter < len(gif.gif) - 1:
+        if player.game_moment == 'space_ship' and gif.counter < len(gif.gif) - 1:
             fps = 7
             gif.change_gif()
         else:
             fps = 80
-    else:
-        drawing.start()
-
+    elif player.game_moment == 'start':
+        drawing.start(old_results)
+    elif player.game_moment == 'finish':
+        if timer == 0:
+            timer = time.time() - start_time
+            with open('data/results.csv', 'a', encoding='utf-8', newline='') as f:
+                writ = csv.writer(f, delimiter=';')
+                writ.writerow([str(round(timer, 2)).ljust(len(str(timer)[0:str(timer).find('.')]) + 3, '0')])
+        drawing.finish(str(round(timer, 2)))
     pygame.display.flip()
     clock.tick(fps)
