@@ -1,6 +1,6 @@
 from settings import *
 import pygame
-import math
+import math, time
 from map import all_collision_walls
 
 class Player:
@@ -14,6 +14,8 @@ class Player:
         self.map = False
         self.game_moment = 'start'
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
+
+        self.last_shoot_time = 0
 
     @property
     def pos(self):
@@ -102,4 +104,13 @@ class Player:
             self.game_moment = 'space_ship'
         if keys[pygame.K_k]:
             self.game_moment = 'finish'
+        self.angle %= DOUBLE_PI
 
+    def shoot(self, sprite):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] and time.time() - self.last_shoot_time > 0.5:
+            sprite.affect(self)
+            self.last_shoot_time = time.time()
+            return True
+        else:
+            return False

@@ -30,6 +30,8 @@ DIST = NUM_RAYS / (2 * math.tan(HALF_FOV))
 PROJ_COEFF = 3 * DIST * TILE
 SCALE = WIDTH // NUM_RAYS
 
+DOUBLE_PI = 2 * math.pi
+CENTER_RAY = NUM_RAYS // 2 - 1
 # texture settings (1200 x 1200)
 TEXTURE_WIDTH = 1200
 TEXTURE_HEIGHT = 1200
