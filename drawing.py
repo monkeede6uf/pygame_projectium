@@ -1,6 +1,5 @@
 import pygame
 from settings import *
-from ray_casting import ray_casting
 from map import mini_map
 
 
@@ -86,7 +85,6 @@ class Drawing:
                                                self.textures['boom'].get_height() * dist))
         self.sc.blit(image_scaled, (WIDTH // 2 - (image_scaled.get_width() // 2),
                                     HEIGHT // 2 - (image_scaled.get_height() // 2)))
-
 
 
 class Gif:

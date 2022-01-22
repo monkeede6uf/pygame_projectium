@@ -1,7 +1,9 @@
 from settings import *
 import pygame
-import math, time
+import math
+import time
 from map import all_collision_walls
+
 
 class Player:
     def __init__(self):
