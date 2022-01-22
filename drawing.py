@@ -87,8 +87,8 @@ class Drawing:
         self.sc.blit(self.textures['health'], (210, 45))
 
     def gun(self, level, time):
-        self.sc.blit(self.textures['pushka' if level == 'paradise' else 'pushka'][self.counter], PUSHKA_POS)
-        if time < 0.17 and self.counter < len(self.textures['pushka']) - 1:
+        self.sc.blit(self.textures['book' if level == 'paradise' else 'pushka'][self.counter], PUSHKA_POS)
+        if time < 0.17 and self.counter < len(self.textures['book' if level == 'paradise' else 'pushka']) - 1:
             self.counter += 1
         else:
             self.counter = 0
