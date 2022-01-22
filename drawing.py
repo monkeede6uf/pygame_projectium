@@ -20,8 +20,8 @@ class Drawing:
                          'ship': pygame.image.load('data/ship.png').convert(),
                          'logo': pygame.image.load('data/logo.png').convert_alpha(),
                          'book': pygame.image.load('data/nigga.png').convert_alpha(),
-                         'pushka': pygame.image.load('data/gun.png').convert_alpha()
-                         }
+                         'pushka': pygame.image.load('data/gun.png').convert_alpha(),
+                         'boom': pygame.image.load('data/boom.png').convert_alpha()}
 
     def start(self, res):
         self.sc.fill((106, 197, 244))
@@ -80,9 +80,12 @@ class Drawing:
     def gun(self, player):
         self.sc.blit(self.textures['book' if player.level == 'paradise' else 'pushka'], PUSHKA_POS)
 
-    def boom(self):
-        pygame.draw.line(self.sc, (66, 170, 255), (WIDTH // 2, HEIGHT // 2), (WIDTH, HEIGHT), 20)
-        pygame.draw.line(self.sc, (255, 255, 255), (WIDTH // 2, HEIGHT // 2), (WIDTH, HEIGHT), 10)
+    def boom(self, dist):
+        image_scaled = pygame.transform.scale(self.textures['boom'],
+                                              (self.textures['boom'].get_width() * dist,
+                                               self.textures['boom'].get_height() * dist))
+        self.sc.blit(image_scaled, (WIDTH // 2 - (image_scaled.get_width() // 2),
+                                    HEIGHT // 2 - (image_scaled.get_height() // 2)))
 
 
 
