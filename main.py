@@ -1,7 +1,9 @@
 import pygame
 from settings import *
 from player import Player
-import math, time, csv
+import math
+import time
+import csv
 from sprite_objects import *
 from ray_casting import ray_casting
 from drawing import Drawing, Gif
@@ -44,16 +46,17 @@ while True:
         walls = ray_casting(player.pos, player.angle, drawing.textures, player.level)
         drawing.world(walls + [obj.object_locate(player, walls) for obj in sprites.list_of_objects[player.level]])
         drawing.stamina(player)
-        drawing.gun(player)
         sprites.check_health(player.level)
-        closest = sprites.return_closest(player)
+        closest = sprites.return_closest(player.level)
         if player.shoot(closest):
             shoots[player.level].play()
-            drawing.boom(0.5)
+        if time.time() - player.last_shoot_time < 0.02:
+            drawing.boom(0.3)
+        drawing.gun(player.level, time.time() - player.last_shoot_time)
         if player.map:
             drawing.mini_map(player)
         if player.game_moment == 'space_ship' and gif.counter < len(gif.gif) - 1:
-            fps = 7
+            fps = 5
             gif.change_gif()
         else:
             fps = 80

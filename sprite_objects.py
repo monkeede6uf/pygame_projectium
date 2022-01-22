@@ -59,8 +59,8 @@ class Sprites:
                 del self.list_of_objects[player_level][i]
                 k += 1
 
-    def return_closest(self, player):
-        dp = sorted([obj for obj in self.list_of_objects[player.level] if obj.is_on_fire()],
+    def return_closest(self, player_level):
+        dp = sorted([obj for obj in self.list_of_objects[player_level] if obj.is_on_fire()],
                     key=lambda x: x.distance_to_sprite)
         return dp[0] if len(dp) != 0 else None
 
@@ -113,8 +113,8 @@ class SpriteObject:
         else:
             return (False,)
 
-    def affect(self, player):
-        distance = self.get_dist(player)
+    def affect(self):
+        distance = self.get_dist()
         if int(distance) in range(350, 700):
             self.hp -= 20
         elif int(distance) in range(280, 350):
@@ -124,7 +124,7 @@ class SpriteObject:
         elif int(distance) in range(75, 172):
             self.hp -= 50
 
-    def get_dist(self, player):
+    def get_dist(self):
         return self.distance_to_sprite
 
     def is_on_fire(self):

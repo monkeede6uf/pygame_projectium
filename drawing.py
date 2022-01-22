@@ -1,6 +1,5 @@
 import pygame
 from settings import *
-from ray_casting import ray_casting
 from map import mini_map
 
 
@@ -12,6 +11,7 @@ class Drawing:
         self.sc_gun = sc_gun
         self.font_text = pygame.font.SysFont('Arial', 36, bold=True)
         self.font_num = pygame.font.SysFont('Arial', 100, bold=True)
+        self.counter = 0
         self.textures = {1: pygame.image.load('data/11.png').convert(),
                          2: pygame.image.load('data/12.png').convert(),
                          21: pygame.image.load('data/21.png').convert(),
@@ -19,8 +19,8 @@ class Drawing:
                          'sky': pygame.image.load('data/sky.png').convert(),
                          'ship': pygame.image.load('data/ship.png').convert(),
                          'logo': pygame.image.load('data/logo.png').convert_alpha(),
-                         'book': pygame.image.load('data/nigga.png').convert_alpha(),
-                         'pushka': pygame.image.load('data/gun.png').convert_alpha(),
+                         'book': [pygame.image.load(f'data/knigga/{i}.png').convert_alpha() for i in range(2)],
+                         'pushka': [pygame.image.load(f'data/gun/{i}.png').convert_alpha() for i in range(13)],
                          'boom': pygame.image.load('data/boom.png').convert_alpha()}
 
     def start(self, res):
@@ -54,8 +54,8 @@ class Drawing:
     def world(self, world_objects):
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
             if obj[0]:
-                _, object, object_pos = obj
-                self.sc.blit(object, object_pos)
+                _, sprite, sprite_pos = obj
+                self.sc.blit(sprite, sprite_pos)
 
     def fps(self, clock):
         display_fps = str(int(clock.get_fps()))
@@ -77,8 +77,12 @@ class Drawing:
         pygame.draw.rect(self.sc_stm, VYRVI_GLAZ, (0, 0, 200 - player.stamina, 20))
         self.sc.blit(self.sc_stm, STAMINA_POS)
 
-    def gun(self, player):
-        self.sc.blit(self.textures['book' if player.level == 'paradise' else 'pushka'], PUSHKA_POS)
+    def gun(self, level, time):
+        self.sc.blit(self.textures['pushka' if level == 'paradise' else 'pushka'][self.counter], PUSHKA_POS)
+        if time < 0.17 and self.counter < len(self.textures['pushka']) - 1:
+            self.counter += 1
+        else:
+            self.counter = 0
 
     def boom(self, dist):
         image_scaled = pygame.transform.scale(self.textures['boom'],
@@ -88,12 +92,11 @@ class Drawing:
                                     HEIGHT // 2 - (image_scaled.get_height() // 2)))
 
 
-
 class Gif:
     def __init__(self, sc):
         self.counter = 0
         self.sc = sc
-        self.gif = [pygame.image.load(f'data/gif/{i}.png').convert_alpha() for i in range(1, 18)]
+        self.gif = [pygame.image.load(f'data/gif/{i}.png').convert_alpha() for i in range(1, 34)]
 
     def change_gif(self):
         self.sc.blit(self.gif[self.counter], (0, 0))

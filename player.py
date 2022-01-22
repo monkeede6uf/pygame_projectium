@@ -1,7 +1,9 @@
 from settings import *
 import pygame
-import math, time
+import math
+import time
 from map import all_collision_walls
+
 
 class Player:
     def __init__(self):
@@ -70,7 +72,7 @@ class Player:
             dy = -player_speed * cos_a
             self.detect_collision(dx, dy)
 
-        if keys[pygame.K_d] :
+        if keys[pygame.K_d]:
             dx = -player_speed * sin_a
             dy = player_speed * cos_a
             self.detect_collision(dx, dy)
@@ -104,9 +106,9 @@ class Player:
         if int(self.x) in range(1324, 1404) and int(self.y) in range(425, 490) and self.level == 'paradise':
             self.level = 'space_ship'
             self.game_moment = 'space_ship'
-            self.x = 243
-            self.y = 148
-            self.angle = -3.14
+            self.x = 138
+            self.y = 138
+            self.angle = 0
 
         if int(self.x) in range(1324, 1404) and int(self.y) in range(425, 490) and self.level == 'space_ship':
             self.game_moment = 'finish'
@@ -124,7 +126,7 @@ class Player:
         if keys[pygame.K_SPACE] and\
                 time.time() - self.last_shoot_time > 0.4 and\
                 sprite is not None:
-            sprite.affect(self)
+            sprite.affect()
             self.last_shoot_time = time.time()
             return True
         elif keys[pygame.K_SPACE] and\
