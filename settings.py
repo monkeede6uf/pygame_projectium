@@ -18,6 +18,7 @@ MAP_TILE = TILE // MAP_SCALE
 MAP_POS = (0, HEIGHT - HEIGHT // MINIMAP_SCALE)
 
 STAMINA_POS = (5, 20)
+HP_POS = (5, 50)
 
 PUSHKA_POS = (WIDTH - 550, HEIGHT - 300)
 # ray casting settings
@@ -45,7 +46,7 @@ player_speed = 2
 # colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-RED = (220, 0, 0)
+RED = (138, 0, 0)
 GREEN = (0, 80, 0)
 VYRVI_GLAZ = (83, 255, 0)
 BLUE = (0, 0, 255)

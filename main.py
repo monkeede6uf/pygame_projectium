@@ -45,7 +45,8 @@ while True:
         drawing.background(player.angle, player.level)
         walls = ray_casting(player.pos, player.angle, drawing.textures, player.level)
         drawing.world(walls + [obj.object_locate(player, walls) for obj in sprites.list_of_objects[player.level]])
-        drawing.stamina(player)
+        drawing.stamina(player.stamina)
+        drawing.health(player.hp)
         sprites.check_health(player.level)
         closest = sprites.return_closest(player.level)
         if player.shoot(closest):

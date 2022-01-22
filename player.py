@@ -9,8 +9,6 @@ class Player:
     def __init__(self):
         self.x, self.y = player_pos
         self.angle = player_angle
-        self.stamina = 0
-        self.regen = False
         self.level = 'paradise'
         self.side = 50
         self.map = False
@@ -18,6 +16,8 @@ class Player:
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
 
         self.last_shoot_time = 0
+        self.stamina = 0
+        self.hp = 0
 
     @property
     def pos(self):

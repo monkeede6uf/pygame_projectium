@@ -21,7 +21,9 @@ class Drawing:
                          'logo': pygame.image.load('data/logo.png').convert_alpha(),
                          'book': [pygame.image.load(f'data/knigga/{i}.png').convert_alpha() for i in range(2)],
                          'pushka': [pygame.image.load(f'data/gun/{i}.png').convert_alpha() for i in range(13)],
-                         'boom': pygame.image.load('data/boom.png').convert_alpha()}
+                         'boom': pygame.image.load('data/boom.png').convert_alpha(),
+                         'stamina': pygame.image.load('data/stamina.png').convert_alpha(),
+                         'health': pygame.image.load('data/health.png').convert_alpha()}
 
     def start(self, res):
         self.sc.fill((106, 197, 244))
@@ -72,10 +74,17 @@ class Drawing:
             pygame.draw.rect(self.sc_map, (117, 246, 255), (x, y, MAP_TILE, MAP_TILE))
         self.sc.blit(self.sc_map, MAP_POS)
 
-    def stamina(self, player):
+    def stamina(self, player_stamina):
         pygame.draw.rect(self.sc_stm, WHITE, (0, 0, 200, 20))
-        pygame.draw.rect(self.sc_stm, VYRVI_GLAZ, (0, 0, 200 - player.stamina, 20))
+        pygame.draw.rect(self.sc_stm, VYRVI_GLAZ, (0, 0, 200 - player_stamina, 20))
         self.sc.blit(self.sc_stm, STAMINA_POS)
+        self.sc.blit(self.textures['stamina'], (210, 15))
+
+    def health(self, hp):
+        pygame.draw.rect(self.sc_stm, WHITE, (0, 0, 200, 20))
+        pygame.draw.rect(self.sc_stm, RED, (0, 0, 200 - hp, 20))
+        self.sc.blit(self.sc_stm, HP_POS)
+        self.sc.blit(self.textures['health'], (210, 45))
 
     def gun(self, level, time):
         self.sc.blit(self.textures['pushka' if level == 'paradise' else 'pushka'][self.counter], PUSHKA_POS)
