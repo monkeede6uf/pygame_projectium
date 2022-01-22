@@ -45,7 +45,7 @@ while True:
         drawing.world(walls + [obj.object_locate(player, walls) for obj in sprites.list_of_objects[player.level]])
         drawing.stamina(player)
         drawing.gun(player)
-        sprites.check_health(player)
+        sprites.check_health(player.level)
         closest = sprites.return_closest(player)
         if player.shoot(closest):
             shoots[player.level].play()

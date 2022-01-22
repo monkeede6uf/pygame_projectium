@@ -37,7 +37,7 @@ class Sprites:
                 'sprite': pygame.image.load('data/sprites/fly.png').convert_alpha(),
                 'animation': deque(
                     [pygame.image.load(f'data/sprites/flying_monster/{i}.png').convert_alpha() for i in range(35)]),
-                'animation_speed': 9,
+                'animation_speed': 3,
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
@@ -52,18 +52,17 @@ class Sprites:
                 SpriteObject(self.sprite_params['flying_monster'], (12, 6.4)),
             ]}
 
-    def check_health(self, player):
+    def check_health(self, player_level):
         k = 0
-        for i in range(len(self.list_of_objects[player.level])):
-            if self.list_of_objects[player.level][i - k].hp <= 0:
-                del self.list_of_objects[player.level][i]
+        for i in range(len(self.list_of_objects[player_level])):
+            if self.list_of_objects[player_level][i - k].hp <= 0:
+                del self.list_of_objects[player_level][i]
                 k += 1
 
     def return_closest(self, player):
         dp = sorted([obj for obj in self.list_of_objects[player.level] if obj.is_on_fire()],
                     key=lambda x: x.distance_to_sprite)
         return dp[0] if len(dp) != 0 else None
-
 
 
 class SpriteObject:
@@ -116,7 +115,9 @@ class SpriteObject:
 
     def affect(self, player):
         distance = self.get_dist(player)
-        if int(distance) in range(280, 350):
+        if int(distance) in range(350, 700):
+            self.hp -= 20
+        elif int(distance) in range(280, 350):
             self.hp -= 20
         elif int(distance) in range(172, 280):
             self.hp -= 30

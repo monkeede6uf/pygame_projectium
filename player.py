@@ -59,22 +59,28 @@ class Player:
             dx = player_speed * cos_a
             dy = player_speed * sin_a
             self.detect_collision(dx, dy)
+
         if keys[pygame.K_s]:
             dx = -player_speed * cos_a
             dy = -player_speed * sin_a
             self.detect_collision(dx, dy)
+
         if keys[pygame.K_a]:
             dx = player_speed * sin_a
             dy = -player_speed * cos_a
             self.detect_collision(dx, dy)
+
         if keys[pygame.K_d] :
             dx = -player_speed * sin_a
             dy = player_speed * cos_a
             self.detect_collision(dx, dy)
+
         if keys[pygame.K_LEFT]:
             self.angle -= 0.02
+
         if keys[pygame.K_RIGHT]:
             self.angle += 0.02
+
         if keys[pygame.K_LSHIFT]:
             if self.stamina <= 190:
                 self.stamina += 3
@@ -84,24 +90,31 @@ class Player:
             else:
                 self.x += player_speed * cos_a
                 self.y += player_speed * sin_a
-        if not keys[pygame.K_LSHIFT]:
+        else:
             self.stamina -= 1 if self.stamina > 0 else 0
+
         if keys[pygame.K_ESCAPE]:
             print(self.x, self.y, self.angle)
+
         if keys[pygame.K_m]:
-            self.map = True if not self.map else False
+            self.map = True
+        else:
+            self.map = False
+
         if int(self.x) in range(1324, 1404) and int(self.y) in range(425, 490) and self.level == 'paradise':
             self.level = 'space_ship'
             self.game_moment = 'space_ship'
             self.x = 243
             self.y = 148
             self.angle = -3.14
+
         if int(self.x) in range(1324, 1404) and int(self.y) in range(425, 490) and self.level == 'space_ship':
             self.game_moment = 'finish'
 
         if keys[pygame.K_j]:
             self.level = 'space_ship'
             self.game_moment = 'space_ship'
+
         if keys[pygame.K_k]:
             self.game_moment = 'finish'
         self.angle %= DOUBLE_PI
@@ -109,7 +122,7 @@ class Player:
     def shoot(self, sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and\
-                time.time() - self.last_shoot_time > 0.5 and\
+                time.time() - self.last_shoot_time > 0.4 and\
                 sprite is not None:
             sprite.affect(self)
             self.last_shoot_time = time.time()
