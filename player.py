@@ -108,8 +108,15 @@ class Player:
 
     def shoot(self, sprite):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] and time.time() - self.last_shoot_time > 0.5:
+        if keys[pygame.K_SPACE] and\
+                time.time() - self.last_shoot_time > 0.5 and\
+                sprite is not None:
             sprite.affect(self)
+            self.last_shoot_time = time.time()
+            return True
+        elif keys[pygame.K_SPACE] and\
+                time.time() - self.last_shoot_time > 0.4 and\
+                sprite is None:
             self.last_shoot_time = time.time()
             return True
         else:

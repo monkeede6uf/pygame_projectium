@@ -46,10 +46,10 @@ while True:
         drawing.stamina(player)
         drawing.gun(player)
         sprites.check_health(player)
-        if sprites.return_closest(player) is not None:
-            if player.shoot(sprites.return_closest(player)):
-                shoots[player.level].play()
-                drawing.boom()
+        closest = sprites.return_closest(player)
+        if player.shoot(closest):
+            shoots[player.level].play()
+            drawing.boom(0.5)
         if player.map:
             drawing.mini_map(player)
         if player.game_moment == 'space_ship' and gif.counter < len(gif.gif) - 1:
@@ -58,7 +58,7 @@ while True:
         else:
             fps = 80
     elif player.game_moment == 'start':
-        drawing.start(old_results)
+        drawing.start(old_results[0:7])
     elif player.game_moment == 'finish':
         if timer == 0:
             timer = time.time() - start_time

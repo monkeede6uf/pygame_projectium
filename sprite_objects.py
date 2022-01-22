@@ -7,10 +7,37 @@ class Sprites:
     def __init__(self):
         self.sprite_params = {
             'devil': {
-                'sprite': pygame.image.load('data/sprites/0.png').convert_alpha(),
+                'sprite': pygame.image.load('data/sprites/chel.png').convert_alpha(),
                 'animation': deque(
                     [pygame.image.load(f'data/sprites/devil/{i}.png').convert_alpha() for i in range(9)]),
                 'animation_speed': 10,
+                'animation_dist': 700,
+                'scale': 1,
+                'vert': 0,
+                'static': True},
+            'space_devil': {
+                'sprite': pygame.image.load('data/sprites/dev.png').convert_alpha(),
+                'animation': deque(
+                    [pygame.image.load(f'data/sprites/devil1/{i}.png').convert_alpha() for i in range(4)]),
+                'animation_speed': 15,
+                'animation_dist': 700,
+                'scale': 1,
+                'vert': 0,
+                'static': True},
+            'angel_of_death': {
+                'sprite': pygame.image.load('data/sprites/angel.png').convert_alpha(),
+                'animation': deque(
+                    [pygame.image.load(f'data/sprites/devil2/{i}.png').convert_alpha() for i in range(12)]),
+                'animation_speed': 20,
+                'animation_dist': 700,
+                'scale': 1,
+                'vert': 0,
+                'static': True},
+            'flying_monster': {
+                'sprite': pygame.image.load('data/sprites/fly.png').convert_alpha(),
+                'animation': deque(
+                    [pygame.image.load(f'data/sprites/flying_monster/{i}.png').convert_alpha() for i in range(35)]),
+                'animation_speed': 9,
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
@@ -18,11 +45,11 @@ class Sprites:
         }
         self.list_of_objects = {'paradise': [
             SpriteObject(self.sprite_params['devil'], (8, 7.5)),
-            SpriteObject(self.sprite_params['devil'], (12, 6.4)),
+            SpriteObject(self.sprite_params['angel_of_death'], (12, 6.4)),
         ],
             'space_ship': [
-                SpriteObject(self.sprite_params['devil'], (8, 7.5)),
-                SpriteObject(self.sprite_params['devil'], (12, 6.4)),
+                SpriteObject(self.sprite_params['space_devil'], (8, 7.5)),
+                SpriteObject(self.sprite_params['flying_monster'], (12, 6.4)),
             ]}
 
     def check_health(self, player):
@@ -33,11 +60,10 @@ class Sprites:
                 k += 1
 
     def return_closest(self, player):
-        sp = sorted(self.list_of_objects[player.level], key=lambda x: x.get_dist(player))
-        if len(sp) != 0:
-            return sp[0]
-        else:
-            return None
+        dp = sorted([obj for obj in self.list_of_objects[player.level] if obj.is_on_fire()],
+                    key=lambda x: x.distance_to_sprite)
+        return dp[0] if len(dp) != 0 else None
+
 
 
 class SpriteObject:
@@ -57,24 +83,24 @@ class SpriteObject:
     def object_locate(self, player, walls):
 
         dx, dy = self.x - player.x, self.y - player.y
-        distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
+        self.distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
 
-        theta = math.atan2(dy, dx)
-        gamma = theta - player.angle
+        self.theta = math.atan2(dy, dx)
+        gamma = self.theta - player.angle
         if dx > 0 and 180 <= math.degrees(player.angle) <= 360 or dx < 0 and dy < 0:
             gamma += DOUBLE_PI
 
         delta_rays = int(gamma / DELTA_ANGLE)
-        current_ray = CENTER_RAY + delta_rays
-        distance_to_sprite *= math.cos(HALF_FOV - current_ray * DELTA_ANGLE)
+        self.current_ray = CENTER_RAY + delta_rays
+        self.distance_to_sprite *= math.cos(HALF_FOV - self.current_ray * DELTA_ANGLE)
 
-        if 0 <= current_ray <= NUM_RAYS - 1 and distance_to_sprite > 30:
-            proj_height = min(int(PROJ_COEFF / distance_to_sprite * self.scale), 2 * HEIGHT)
-            half_proj_height = proj_height // 2
+        if 0 <= self.current_ray <= NUM_RAYS - 1 and self.distance_to_sprite > 30:
+            self.proj_height = min(int(PROJ_COEFF / self.distance_to_sprite * self.scale), 2 * HEIGHT)
+            half_proj_height = self.proj_height // 2
             shift = half_proj_height * self.shift
 
             # sprite animation
-            if self.animation and distance_to_sprite < self.animation_dist:
+            if self.animation and self.distance_to_sprite < self.animation_dist:
                 self.object = self.animation[0]
                 if self.animation_count < self.animation_speed:
                     self.animation_count += 1
@@ -82,21 +108,25 @@ class SpriteObject:
                     self.animation.rotate()
                     self.animation_count = 0
 
-            sprite_pos = (current_ray * SCALE - half_proj_height, HALF_HEIGHT - half_proj_height + shift)
-            sprite = pygame.transform.scale(self.object, (proj_height, proj_height))
-            return (distance_to_sprite, sprite, sprite_pos)
+            sprite_pos = (self.current_ray * SCALE - half_proj_height, HALF_HEIGHT - half_proj_height + shift)
+            sprite = pygame.transform.scale(self.object, (self.proj_height, self.proj_height))
+            return (self.distance_to_sprite, sprite, sprite_pos)
         else:
             return (False,)
 
     def affect(self, player):
         distance = self.get_dist(player)
         if int(distance) in range(280, 350):
-            self.hp -= 9
-        elif int(distance) in range(172, 280):
             self.hp -= 20
-        elif int(distance) in range(75, 172):
+        elif int(distance) in range(172, 280):
             self.hp -= 30
+        elif int(distance) in range(75, 172):
+            self.hp -= 50
 
     def get_dist(self, player):
-        dx, dy = self.x - player.x, self.y - player.y
-        return math.sqrt(dx ** 2 + dy ** 2)
+        return self.distance_to_sprite
+
+    def is_on_fire(self):
+        if CENTER_RAY - 50 < self.current_ray < CENTER_RAY + 50:
+            return True
+        return False
