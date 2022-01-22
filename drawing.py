@@ -87,6 +87,7 @@ class Drawing:
                                     HEIGHT // 2 - (image_scaled.get_height() // 2)))
 
 
+
 class Gif:
     def __init__(self, sc):
         self.counter = 0

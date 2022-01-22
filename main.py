@@ -1,7 +1,8 @@
 import pygame
 from settings import *
 from player import Player
-import math, time, csv
+import time
+import csv
 from sprite_objects import *
 from ray_casting import ray_casting
 from drawing import Drawing, Gif
@@ -35,7 +36,7 @@ while True:
         if player.game_moment == 'start' and any(pygame.key.get_pressed()):
             player.game_moment = 'paradise'
             pygame.mixer.music.play(-1)
-            pygame.mixer.music.set_volume(0.02)
+            pygame.mixer.music.set_volume(0.2)
             start_time = time.time()
     if player.game_moment in ['paradise', 'space_ship']:
         player.movement()
