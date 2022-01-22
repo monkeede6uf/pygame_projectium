@@ -4,8 +4,9 @@ from player import Player
 import time
 import csv
 from sprite_objects import *
-from ray_casting import ray_casting
+from ray_casting import *
 from drawing import Drawing, Gif
+
 
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.init()
@@ -15,6 +16,7 @@ sc_stm = pygame.Surface((200, 20))
 sc_gun = pygame.Surface((500, 300))
 clock = pygame.time.Clock()
 player = Player()
+pygame.mouse.set_visible(False)
 drawing = Drawing(sc, sc_map, sc_stm, sc_gun)
 gif = Gif(sc)
 sprites = Sprites()
@@ -36,8 +38,9 @@ while True:
         if player.game_moment == 'start' and any(pygame.key.get_pressed()):
             player.game_moment = 'paradise'
             pygame.mixer.music.play(-1)
-            pygame.mixer.music.set_volume(0.2)
+            pygame.mixer.music.set_volume(0.02)
             start_time = time.time()
+
     if player.game_moment in ['paradise', 'space_ship']:
         player.movement()
         sc.fill(BLACK)
@@ -51,8 +54,10 @@ while True:
         if player.shoot(closest):
             shoots[player.level].play()
             drawing.boom(0.5)
+
         if player.map:
             drawing.mini_map(player)
+
         if player.game_moment == 'space_ship' and gif.counter < len(gif.gif) - 1:
             fps = 7
             gif.change_gif()
@@ -60,6 +65,7 @@ while True:
             fps = 80
     elif player.game_moment == 'start':
         drawing.start(old_results[0:7])
+
     elif player.game_moment == 'finish':
         if timer == 0:
             timer = time.time() - start_time
@@ -67,5 +73,6 @@ while True:
                 writ = csv.writer(f, delimiter=';')
                 writ.writerow([str(round(timer, 2)).ljust(len(str(timer)[0:str(timer).find('.')]) + 3, '0')])
         drawing.finish(str(round(timer, 2)))
+
     pygame.display.flip()
     clock.tick(fps)

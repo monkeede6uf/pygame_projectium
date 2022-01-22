@@ -16,6 +16,7 @@ class Player:
         self.map = False
         self.game_moment = 'start'
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
+        self.sensitivity = 0.004
 
         self.last_shoot_time = 0
 
@@ -52,6 +53,8 @@ class Player:
     def movement(self):
         self.keys_control()
         self.rect.center = self.x, self.y
+        self.mouse_control()
+        self.angle %= DOUBLE_PI
 
     def keys_control(self):
         sin_a = math.sin(self.angle)
@@ -107,6 +110,12 @@ class Player:
         if keys[pygame.K_k]:
             self.game_moment = 'finish'
         self.angle %= DOUBLE_PI
+
+    def mouse_control(self):
+        if pygame.mouse.get_focused():
+            difference = pygame.mouse.get_pos()[0] - HALF_WIDTH
+            pygame.mouse.set_pos((HALF_WIDTH, HALF_HEIGHT))
+            self.angle += difference * self.sensitivity
 
     def shoot(self, sprite):
         keys = pygame.key.get_pressed()

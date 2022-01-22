@@ -1,5 +1,9 @@
 from settings import *
 import pygame
+from numba.core import types
+from numba.typed import Dict
+from numba import int32
+
 
 text_map_paradise = [
     [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11],
@@ -31,7 +35,7 @@ all_levels = {}
 mini_map = set()
 all_collision_walls = {}
 for level in [(text_map_paradise, 'paradise'), (text_map_space_ship, 'space_ship')]:
-    world_map = {}
+    world_map = Dict.empty(key_type=types.UniTuple(int32, 2), value_types=int32)
     collision_walls = []
     for j, row in enumerate(level[0]):
         for i, char in enumerate(row):

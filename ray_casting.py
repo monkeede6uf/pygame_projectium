@@ -1,14 +1,16 @@
 import pygame
 from settings import *
 from map import all_levels, WORLD_WIDTH, WORLD_HEIGHT
+from numba import njit
 
 
+@njit(fastmath=True)
 def mapping(a, b):
     return (a // TILE) * TILE, (b // TILE) * TILE
 
-
-def ray_casting(player_pos, player_angle, textures, player_level):
-    walls = []
+@njit(fastmath=True)
+def ray_casting(player_pos, player_angle, player_level):
+    casted_walls = []
     ox, oy = player_pos
     xm, ym = mapping(ox, oy)
     cur_angle = player_angle - HALF_FOV
@@ -47,9 +49,18 @@ def ray_casting(player_pos, player_angle, textures, player_level):
         depth = max(depth, 0.00001)
         proj_height = min(int(PROJ_COEFF / depth), PHEIGHT)
 
+        casted_walls.append((depth, offset, proj_height, texture))
+        cur_angle += DELTA_ANGLE
+    return casted_walls
+
+
+def ray_casting_walls(player, textures):
+    casted_walls = ray_casting(player.pos, player.angle, all_levels[player.game_moment])
+    walls = []
+    for ray, casted_values in enumerate(casted_walls):
+        depth, offset, proj_height, texture = casted_values
         wall_column = textures[texture].subsurface(offset * TEXTURE_SCALE, 0, TEXTURE_SCALE, TEXTURE_HEIGHT)
         wall_column = pygame.transform.scale(wall_column, (SCALE, proj_height))
         wall_pos = (ray * SCALE, HALF_HEIGHT - proj_height // 2)
         walls.append((depth, wall_column, wall_pos))
-        cur_angle += DELTA_ANGLE
     return walls
