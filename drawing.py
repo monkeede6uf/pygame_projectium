@@ -44,14 +44,18 @@ class Drawing:
 
     def background(self, angle, player_level):
         key = 'sky' if player_level == 'paradise' else 'ship'
+        col = DARKGRAY if player_level == 'space_ship' else SANDY
         sky_offset = -7 * math.degrees(angle) % WIDTH
         self.sc.blit(self.textures[key], (sky_offset, 0))
         self.sc.blit(self.textures[key], (sky_offset - WIDTH, 0))
         self.sc.blit(self.textures[key], (sky_offset + WIDTH, 0))
-        pygame.draw.rect(self.sc, DARKGRAY, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
+        pygame.draw.rect(self.sc, col, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
 
-    def world(self, player_pos, player_angle, player_level):
-        ray_casting(self.sc, player_pos, player_angle, self.textures, player_level)
+    def world(self, world_objects):
+        for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
+            if obj[0]:
+                _, object, object_pos = obj
+                self.sc.blit(object, object_pos)
 
     def fps(self, clock):
         display_fps = str(int(clock.get_fps()))
@@ -75,6 +79,11 @@ class Drawing:
 
     def gun(self, player):
         self.sc.blit(self.textures['book' if player.level == 'paradise' else 'pushka'], PUSHKA_POS)
+
+    def boom(self):
+        pygame.draw.line(self.sc, (66, 170, 255), (WIDTH // 2, HEIGHT // 2), (WIDTH, HEIGHT), 20)
+        pygame.draw.line(self.sc, (255, 255, 255), (WIDTH // 2, HEIGHT // 2), (WIDTH, HEIGHT), 10)
+
 
 
 class Gif:
