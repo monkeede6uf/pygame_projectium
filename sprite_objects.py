@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 from collections import deque
+from ray_casting import ray_casting_npc_player
 
 
 class Sprites:
@@ -65,6 +66,7 @@ class Sprites:
         return dp[0] if len(dp) != 0 else None
 
 
+
 class SpriteObject:
     def __init__(self, parameters, pos):
         self.object = parameters['sprite']
@@ -76,6 +78,7 @@ class SpriteObject:
         self.animation_dist = parameters['animation_dist']
         self.animation_speed = parameters['animation_speed']
         self.animation_count = 0
+        self.stuck = parameters['static']
 
         self.hp = 100
 
@@ -115,13 +118,13 @@ class SpriteObject:
 
     def affect(self):
         distance = self.get_dist()
-        if int(distance) in range(350, 700):
+        if 350 < int(distance) < 700:
             self.hp -= 20
-        elif int(distance) in range(280, 350):
+        elif 280 < int(distance) < 350:
             self.hp -= 20
-        elif int(distance) in range(172, 280):
+        elif 172 < int(distance) < 280:
             self.hp -= 30
-        elif int(distance) in range(75, 172):
+        elif 75 < int(distance) < 172:
             self.hp -= 50
 
     def get_dist(self):
@@ -131,3 +134,10 @@ class SpriteObject:
         if CENTER_RAY - 50 < self.current_ray < CENTER_RAY + 50:
             return True
         return False
+
+    def move_sprites(self, pl_x, pl_y, is_on_fire):
+        if is_on_fire and self.distance_to_sprite > TILE and self.stuck:
+            dx = self.x - pl_x
+            dy = self.y - pl_y
+            self.x = self.x + 1 if dx < 0 else self.x - 1
+            self.y = self.y + 1 if dy < 0 else self.y - 1

@@ -19,7 +19,7 @@ class Drawing:
                          'sky': pygame.image.load('data/sky.png').convert(),
                          'ship': pygame.image.load('data/ship.png').convert(),
                          'logo': pygame.image.load('data/logo.png').convert_alpha(),
-                         'book': [pygame.image.load(f'data/knigga/{i}.png').convert_alpha() for i in range(2)],
+                         'book': [pygame.image.load(f'data/knigga/{i}.png').convert_alpha() for i in range(12)],
                          'pushka': [pygame.image.load(f'data/gun/{i}.png').convert_alpha() for i in range(13)],
                          'boom': pygame.image.load('data/boom.png').convert_alpha(),
                          'stamina': pygame.image.load('data/stamina.png').convert_alpha(),

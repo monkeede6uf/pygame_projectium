@@ -103,14 +103,14 @@ class Player:
         else:
             self.map = False
 
-        if int(self.x) in range(1324, 1404) and int(self.y) in range(425, 490) and self.level == 'paradise':
+        if 628 < int(self.x) < 690 and 925 < int(self.y) < 977 and self.level == 'paradise':
             self.level = 'space_ship'
             self.game_moment = 'space_ship'
             self.x = 138
             self.y = 138
             self.angle = 0
 
-        if int(self.x) in range(1324, 1404) and int(self.y) in range(425, 490) and self.level == 'space_ship':
+        if 1800 < int(self.x) < 1876 and 125 < int(self.y) < 176 and self.level == 'space_ship':
             self.game_moment = 'finish'
 
         if keys[pygame.K_j]:
