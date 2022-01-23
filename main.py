@@ -45,7 +45,7 @@ while True:
         player.movement()
         sc.fill(BLACK)
         drawing.background(player.angle, player.level)
-        walls = ray_casting(player.pos, player.angle, drawing.textures, player.level)
+        walls = ray_casting_walls(player, drawing.textures)
         drawing.world(walls + [obj.object_locate(player, walls) for obj in sprites.list_of_objects[player.level]])
         drawing.stamina(player)
         drawing.gun(player)
