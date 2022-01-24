@@ -2,6 +2,7 @@ import pygame
 from settings import *
 from collections import deque
 from ray_casting import ray_casting_npc_player
+import time
 
 
 class Sprites:
@@ -15,7 +16,7 @@ class Sprites:
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
-                'static': True},
+                'static': False},
             'space_devil': {
                 'sprite': pygame.image.load('data/sprites/dev.png').convert_alpha(),
                 'animation': deque(
@@ -42,16 +43,17 @@ class Sprites:
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
-                'static': True}
-        }
+                'static': True},
+            }
         self.list_of_objects = {'paradise': [
             SpriteObject(self.sprite_params['devil'], (8, 7.5)),
             SpriteObject(self.sprite_params['angel_of_death'], (12, 6.4)),
+            SpriteObject(self.sprite_params['angel_of_death'], (0, 0))
         ],
             'space_ship': [
                 SpriteObject(self.sprite_params['space_devil'], (8, 7.5)),
-                SpriteObject(self.sprite_params['flying_monster'], (12, 6.4)),
-            ]}
+                SpriteObject(self.sprite_params['flying_monster'], (12, 6.4))],
+            'shot': []}
 
     def check_health(self, player_level):
         k = 0
@@ -64,6 +66,14 @@ class Sprites:
         dp = sorted([obj for obj in self.list_of_objects[player_level] if obj.is_on_fire()],
                     key=lambda x: x.distance_to_sprite)
         return dp[0] if len(dp) != 0 else None
+
+    def shoot(self, player_x, player_y, is_on_fire, closest):
+        if len(self.list_of_objects['shot']) == 0 and is_on_fire:
+            self.list_of_objects['shot'] = [SpriteObject(self.sprite_params['shot'], closest.pos), (player_x * SCALE, player_y * SCALE)]
+            print(player_y, player_x)
+
+        elif len(self.list_of_objects['shot']) > 0:
+            pass
 
 
 
@@ -81,6 +91,7 @@ class SpriteObject:
         self.stuck = parameters['static']
 
         self.hp = 100
+        self.last_shoot_time = 0
 
     def object_locate(self, player, walls):
 
@@ -101,7 +112,7 @@ class SpriteObject:
             half_proj_height = self.proj_height // 2
             shift = half_proj_height * self.shift
 
-            # sprite animation
+            # анимация спрайта
             if self.animation and self.distance_to_sprite < self.animation_dist:
                 self.object = self.animation[0]
                 if self.animation_count < self.animation_speed:
@@ -141,3 +152,8 @@ class SpriteObject:
             dy = self.y - pl_y
             self.x = self.x + 1 if dx < 0 else self.x - 1
             self.y = self.y + 1 if dy < 0 else self.y - 1
+
+    def shoot(self, player_class, is_on_fire):
+        if is_on_fire and self.distance_to_sprite < 1.5 * TILE and time.time() - self.last_shoot_time > 1:
+            player_class.hp += 10
+            self.last_shoot_time = time.time()

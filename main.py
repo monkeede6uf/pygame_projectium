@@ -44,7 +44,8 @@ while True:
         sc.fill(BLACK)
         drawing.background(player.angle, player.level)
         walls = ray_casting(player.pos, player.angle, drawing.textures, player.level)
-        drawing.world(walls + [obj.object_locate(player, walls) for obj in sprites.list_of_objects[player.level]])
+        drawing.world(walls + [obj.object_locate(player, walls) for obj in sprites.list_of_objects[player.level]] +
+                      [obj[0].object_locate(player, walls) for obj in sprites.list_of_objects['shot']])
         drawing.stamina(player.stamina)
         drawing.health(player.hp)
 
@@ -53,7 +54,7 @@ while True:
             obj.move_sprites(player.x, player.y,
                              ray_casting_npc_player(obj.x, obj.y,  (player.x, player.y),
                                                     player.level))
-
+            obj.shoot(player, ray_casting_npc_player(obj.x, obj.y,  (player.x, player.y), player.level))
         closest = sprites.return_closest(player.level)
         if player.shoot(closest):
             shoots[player.level].play()
