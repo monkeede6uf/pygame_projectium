@@ -9,7 +9,7 @@ def mapping(a, b):
     return (a // TILE) * TILE, (b // TILE) * TILE
 
 @njit(fastmath=True)
-def ray_casting(player_pos, player_angle, player_level):
+def ray_casting(player_pos, player_angle, world_map):
     casted_walls = []
     ox, oy = player_pos
     xm, ym = mapping(ox, oy)
@@ -26,8 +26,8 @@ def ray_casting(player_pos, player_angle, player_level):
             depth_v = (x - ox) / cos_a
             yv = oy + depth_v * sin_a
             tile_v = mapping(x + dx, yv)
-            if tile_v in all_levels[player_level]:
-                texture_v = all_levels[player_level][tile_v]
+            if tile_v in world_map:
+                texture_v = world_map[tile_v]
                 break
             x += dx * TILE
 
@@ -37,8 +37,8 @@ def ray_casting(player_pos, player_angle, player_level):
             depth_h = (y - oy) / sin_a
             xh = ox + depth_h * cos_a
             tile_h = mapping(xh, y + dy)
-            if tile_h in all_levels[player_level]:
-                texture_h = all_levels[player_level][tile_h]
+            if tile_h in world_map:
+                texture_h = world_map[tile_h]
                 break
             y += dy * TILE
 

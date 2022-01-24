@@ -4,7 +4,7 @@ from player import Player
 import time
 import csv
 from sprite_objects import *
-from ray_casting import *
+from ray_casting import ray_casting_walls
 from drawing import Drawing, Gif
 
 
