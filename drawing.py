@@ -25,6 +25,8 @@ class Drawing:
                          'stamina': pygame.image.load('data/stamina.png').convert_alpha(),
                          'health': pygame.image.load('data/health.png').convert_alpha()}
 
+    # функция отрисовки стартового меню
+
     def start(self, res):
         self.sc.fill((106, 197, 244))
         self.sc.blit(self.textures['logo'], (300, 50))
@@ -36,13 +38,27 @@ class Drawing:
             self.sc.blit(self.font_text.render(i + 's' if i != 'Your records:' else i, 1, WHITE), (950, pos))
             pos += 40
 
+    # функция отрисовки финального меню
+
     def finish(self, time):
         self.sc.fill((106, 197, 244))
         render = self.font_num.render(f'{time.ljust(len(time[0:time.find(".")]) + 3, "0")}s', 1, WHITE)
-        self.sc.blit(render, (WIDTH // 2 - 100,  HEIGHT // 3 + 20))
+        self.sc.blit(render, (WIDTH // 2 - 100, HEIGHT // 3 + 20))
         render = self.font_text.render('Вы прошли игру, время прохождения составило:', 1, (255, 92, 0))
         pygame.draw.rect(self.sc, (255, 255, 255), (235, 235, 745, 65), 0)
         self.sc.blit(render, (247, HEIGHT // 3 - 20))
+
+    # функция отрисовки меню возрождения
+
+    def dead(self):
+        self.sc.fill((106, 197, 244))
+        render1 = self.font_text.render('Вы были убиты, возродиться?', 1, (255, 92, 0))
+        pygame.draw.rect(self.sc, (255, 255, 255), (235, 235, 745, 65), 0)
+        self.sc.blit(render1, (247, HEIGHT // 3 - 20))
+        render1 = self.font_text.render('нажмите "R", чтобы возродиться', 1, (255, 255, 255))
+        self.sc.blit(render1, (240, 2 * HEIGHT // 3 - 20))
+
+    # функция отрисовки динамического неба
 
     def background(self, angle, player_level):
         key = 'sky' if player_level == 'paradise' else 'ship'
@@ -52,6 +68,8 @@ class Drawing:
         self.sc.blit(self.textures[key], (sky_offset - WIDTH, 0))
         self.sc.blit(self.textures[key], (sky_offset + WIDTH, 0))
         pygame.draw.rect(self.sc, col, (0, HALF_HEIGHT, WIDTH, HALF_HEIGHT))
+
+    # функция отрисовки стен и спрайтов
 
     def world(self, world_objects):
         for obj in sorted(world_objects, key=lambda n: n[0], reverse=True):
@@ -64,6 +82,8 @@ class Drawing:
         render = self.font_num.render(display_fps, 0, RED)
         self.sc.blit(render, FPS_POS)
 
+    # функция отрисовки мини-карты
+
     def mini_map(self, player):
         self.sc_map.fill(BLACK)
         map_x, map_y = player.x // MAP_SCALE, player.y // MAP_SCALE
@@ -74,6 +94,8 @@ class Drawing:
             pygame.draw.rect(self.sc_map, (117, 246, 255), (x, y, MAP_TILE, MAP_TILE))
         self.sc.blit(self.sc_map, MAP_POS)
 
+    # функции отрисовки здоровья и энергии игрока
+
     def stamina(self, player_stamina):
         pygame.draw.rect(self.sc_stm, WHITE, (0, 0, 200, 20))
         pygame.draw.rect(self.sc_stm, VYRVI_GLAZ, (0, 0, 200 - player_stamina, 20))
@@ -82,9 +104,11 @@ class Drawing:
 
     def health(self, hp):
         pygame.draw.rect(self.sc_stm, WHITE, (0, 0, 200, 20))
-        pygame.draw.rect(self.sc_stm, RED, (0, 0, 200 - hp, 20))
+        pygame.draw.rect(self.sc_stm, RED, (0, 0, 200 - (hp * 2), 20))
         self.sc.blit(self.sc_stm, HP_POS)
         self.sc.blit(self.textures['health'], (210, 45))
+
+    # функция отрисовки анимации выстрела из оружия
 
     def gun(self, level, time):
         self.sc.blit(self.textures['book' if level == 'paradise' else 'pushka'][self.counter], PUSHKA_POS)
@@ -93,12 +117,17 @@ class Drawing:
         else:
             self.counter = 0
 
+    # функция отрисовки эффекта выстрела(частицы)
+
     def boom(self, dist):
         image_scaled = pygame.transform.scale(self.textures['boom'],
                                               (self.textures['boom'].get_width() * dist,
                                                self.textures['boom'].get_height() * dist))
         self.sc.blit(image_scaled, (WIDTH // 2 - (image_scaled.get_width() // 2),
                                     HEIGHT // 2 - (image_scaled.get_height() // 2)))
+
+
+# класс для отрисовки гиф-изображения при переходе на другой уровень
 
 
 class Gif:

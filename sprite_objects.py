@@ -16,7 +16,8 @@ class Sprites:
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
-                'static': False},
+                'static': True,
+                'hp': 100},
             'space_devil': {
                 'sprite': pygame.image.load('data/sprites/dev.png').convert_alpha(),
                 'animation': deque(
@@ -25,7 +26,8 @@ class Sprites:
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
-                'static': True},
+                'static': True,
+                'hp': 100},
             'angel_of_death': {
                 'sprite': pygame.image.load('data/sprites/angel.png').convert_alpha(),
                 'animation': deque(
@@ -34,7 +36,8 @@ class Sprites:
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
-                'static': True},
+                'static': True,
+                'hp': 100},
             'flying_monster': {
                 'sprite': pygame.image.load('data/sprites/fly.png').convert_alpha(),
                 'animation': deque(
@@ -43,17 +46,45 @@ class Sprites:
                 'animation_dist': 700,
                 'scale': 1,
                 'vert': 0,
-                'static': True},
-            }
+                'static': True,
+                'hp': 100},
+            'space_boss': {
+                'sprite': pygame.image.load('data/sprites/boss.png').convert_alpha(),
+                'animation': deque(
+                    [pygame.image.load(f'data/sprites/space_boss/{i}.png').convert_alpha() for i in range(16)]),
+                'animation_speed': 7,
+                'animation_dist': 700,
+                'scale': 1.5,
+                'vert': 0,
+                'static': True,
+                'hp': 500},
+            'ment': {
+                'sprite': pygame.image.load('data/sprites/finish.png').convert_alpha(),
+                'animation': [],
+                'animation_speed': 0,
+                'animation_dist': 700,
+                'scale': 0.5,
+                'vert': 1,
+                'static': False,
+                'hp': 10000}
+        }
         self.list_of_objects = {'paradise': [
             SpriteObject(self.sprite_params['devil'], (8, 7.5)),
             SpriteObject(self.sprite_params['angel_of_death'], (12, 6.4)),
-            SpriteObject(self.sprite_params['angel_of_death'], (0, 0))
+            SpriteObject(self.sprite_params['angel_of_death'], (12, 1.5)),
+            SpriteObject(self.sprite_params['angel_of_death'], (19, 6.5)),
+            SpriteObject(self.sprite_params['devil'], (4, 10)),
+            SpriteObject(self.sprite_params['ment'], (6.5, 9.5))
         ],
             'space_ship': [
                 SpriteObject(self.sprite_params['space_devil'], (8, 7.5)),
-                SpriteObject(self.sprite_params['flying_monster'], (12, 6.4))],
-            'shot': []}
+                SpriteObject(self.sprite_params['flying_monster'], (2.5, 6.7)),
+                SpriteObject(self.sprite_params['space_boss'], (12, 6.4)),
+                SpriteObject(self.sprite_params['ment'], (18.5, 1.5))
+        ],
+            }
+
+    # проверка здоровья спрайтов
 
     def check_health(self, player_level):
         k = 0
@@ -62,19 +93,12 @@ class Sprites:
                 del self.list_of_objects[player_level][i]
                 k += 1
 
+    # возвращает ближайший спрайт к игрока
+
     def return_closest(self, player_level):
         dp = sorted([obj for obj in self.list_of_objects[player_level] if obj.is_on_fire()],
                     key=lambda x: x.distance_to_sprite)
         return dp[0] if len(dp) != 0 else None
-
-    def shoot(self, player_x, player_y, is_on_fire, closest):
-        if len(self.list_of_objects['shot']) == 0 and is_on_fire:
-            self.list_of_objects['shot'] = [SpriteObject(self.sprite_params['shot'], closest.pos), (player_x * SCALE, player_y * SCALE)]
-            print(player_y, player_x)
-
-        elif len(self.list_of_objects['shot']) > 0:
-            pass
-
 
 
 class SpriteObject:
@@ -90,11 +114,10 @@ class SpriteObject:
         self.animation_count = 0
         self.stuck = parameters['static']
 
-        self.hp = 100
+        self.hp = parameters['hp']
         self.last_shoot_time = 0
 
     def object_locate(self, player, walls):
-
         dx, dy = self.x - player.x, self.y - player.y
         self.distance_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
 
@@ -127,6 +150,8 @@ class SpriteObject:
         else:
             return (False,)
 
+    # функция для нанесения урона нпс
+
     def affect(self):
         distance = self.get_dist()
         if 350 < int(distance) < 700:
@@ -138,13 +163,19 @@ class SpriteObject:
         elif 75 < int(distance) < 172:
             self.hp -= 50
 
+    # получение дистанции от спрайта до игрока
+
     def get_dist(self):
         return self.distance_to_sprite
+
+    # стоит ли обьект на линии огня
 
     def is_on_fire(self):
         if CENTER_RAY - 50 < self.current_ray < CENTER_RAY + 50:
             return True
         return False
+
+    # движение спрайтов
 
     def move_sprites(self, pl_x, pl_y, is_on_fire):
         if is_on_fire and self.distance_to_sprite > TILE and self.stuck:
@@ -153,7 +184,9 @@ class SpriteObject:
             self.x = self.x + 1 if dx < 0 else self.x - 1
             self.y = self.y + 1 if dy < 0 else self.y - 1
 
-    def shoot(self, player_class, is_on_fire):
-        if is_on_fire and self.distance_to_sprite < 1.5 * TILE and time.time() - self.last_shoot_time > 1:
+    # нанесение урона игроку от спрайта
+
+    def shoot(self, player_class, on_fire):
+        if on_fire and self.distance_to_sprite < 100 and time.time() - self.last_shoot_time > 1:
             player_class.hp += 10
             self.last_shoot_time = time.time()

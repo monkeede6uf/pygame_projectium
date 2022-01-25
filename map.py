@@ -1,6 +1,7 @@
 from settings import *
 import pygame
 
+# создание уровней с помощью списка номеров текстур
 text_map_paradise = [
     [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11],
     [11, 0, 0, 0, 11, 11, 11, 0, 0, 0, 0, 0, 0, 0, 0, 11, 11, 0, 0, 11],
@@ -34,6 +35,8 @@ WORLD_HEIGHT = len(text_map_paradise) * TILE
 all_levels = {}
 mini_map = set()
 all_collision_walls = {}
+
+# добавление в словарь all_collision_walls уровней по ключу их названия
 for level in [(text_map_paradise, 'paradise'), (text_map_space_ship, 'space_ship')]:
     world_map = {}
     collision_walls = []

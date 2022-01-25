@@ -16,13 +16,16 @@ class Player:
         self.rect = pygame.Rect(*player_pos, self.side, self.side)
 
         self.last_shoot_time = 0
+        self.last_resq_time = 0
         self.stamina = 0
         self.hp = 0
+        self.sensitivity = 0.004
 
     @property
     def pos(self):
         return self.x, self.y
 
+    # коллизия объекта и стен
     def detect_collision(self, dx, dy):
         next_rect = self.rect.copy()
         next_rect.move_ip(dx, dy)
@@ -49,9 +52,13 @@ class Player:
         self.x += dx
         self.y += dy
 
+    # движение игрока по карте
+
     def movement(self):
         self.keys_control()
         self.rect.center = self.x, self.y
+        self.mouse_control()
+        self.angle %= DOUBLE_PI
 
     def keys_control(self):
         sin_a = math.sin(self.angle)
@@ -97,11 +104,7 @@ class Player:
 
         if keys[pygame.K_ESCAPE]:
             print(self.x, self.y, self.angle)
-
-        if keys[pygame.K_m]:
-            self.map = True
-        else:
-            self.map = False
+        # проверка на конец уровня
 
         if 628 < int(self.x) < 690 and 925 < int(self.y) < 977 and self.level == 'paradise':
             self.level = 'space_ship'
@@ -109,6 +112,7 @@ class Player:
             self.x = 138
             self.y = 138
             self.angle = 0
+            self.hp = 0
 
         if 1800 < int(self.x) < 1876 and 125 < int(self.y) < 176 and self.level == 'space_ship':
             self.game_moment = 'finish'
@@ -121,15 +125,31 @@ class Player:
             self.game_moment = 'finish'
         self.angle %= DOUBLE_PI
 
+        if self.hp > 0:
+            if time.time() - self.last_resq_time > 2:
+                self.hp -= 5
+                self.last_resq_time = time.time()
+
+    # контроль мыши
+
+    def mouse_control(self):
+        if pygame.mouse.get_focused():
+            difference = pygame.mouse.get_pos()[0] - HALF_WIDTH
+            pygame.mouse.set_pos((HALF_WIDTH, HALF_HEIGHT))
+            self.angle += difference * self.sensitivity
+
+    # функция выстрела игрока
+
     def shoot(self, sprite):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] and\
+        km = pygame.mouse.get_pressed(num_buttons=3)
+        if (keys[pygame.K_SPACE] or km[0]) and\
                 time.time() - self.last_shoot_time > 0.4 and\
                 sprite is not None:
             sprite.affect()
             self.last_shoot_time = time.time()
             return True
-        elif keys[pygame.K_SPACE] and\
+        elif (keys[pygame.K_SPACE] or km[0]) and\
                 time.time() - self.last_shoot_time > 0.4 and\
                 sprite is None:
             self.last_shoot_time = time.time()
